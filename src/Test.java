@@ -1,4 +1,4 @@
-import login.menu.Menu;
+import login.Menu;
 
 import java.util.Scanner;
 

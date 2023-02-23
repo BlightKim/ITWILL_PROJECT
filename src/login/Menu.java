@@ -1,8 +1,12 @@
-package login.menu;
+package login;
 
 import dao.RegisterDao;
 import dao.RegisterDaoImpl;
+//import login.menu.DeliveryOrder;
+import dao.UserDao;
+import login.menu.DeliveryOrder;
 import register.Register;
+import vo.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,9 +15,10 @@ import java.util.Scanner;
 
 public class Menu implements Runnable {
   Scanner sc;
-
-
+//  DeliveryOrder deliveryOrder = new DeliveryOrder();
   Register register;
+  UserDao userDao;
+  DeliveryOrder deliveryOrder;
   private RegisterDao registerDao = new RegisterDaoImpl();
 
   public Menu(Scanner sc) {
@@ -25,18 +30,19 @@ public class Menu implements Runnable {
     String choice = "";
     int loginTry = 0; // 로그인 시도횟수
 
-    menu:
-    while (true) {
+    showLogo(); // 로고 보여주기
 
-      showLogo(); // 로고 보여주기
+    System.out.print("이용을 원하시면 엔터를 눌러주세요. (프로그램 종료는 0번)");
 
-      System.out.print("이용을 원하시면 엔터를 눌러주세요. (프로그램 종료는 0번)");
+    if ((choice = sc.nextLine()).equals("")) {  // 엔터치면 프로그램 시작
 
-      if ((choice = sc.nextLine()).equals("")) {
+      menu:
+      while (true) {
+
 
         System.out.println("1.로그인  2.회원가입  3.프로그램 종료");
 
-        System.out.print("번호를 선택해주세요. >>");
+        System.out.print("원하시는 메뉴를 선택해주세요. >>");
 
         choice = sc.nextLine();
 
@@ -58,7 +64,29 @@ public class Menu implements Runnable {
                 continue menu;
 
               if (registerDao.login(id, password)) { // 로그인 성공
+                User user = registerDao.selectOne(id);
 
+                deliveryOrder = new DeliveryOrder(user);
+
+                System.out.println("1.주문  2.주문내역 조회  3.주문 취소  4.뒤로가기");
+
+                System.out.print("원하시는 서비스를 선택해주세요. >>");
+                choice = sc.nextLine();
+
+                switch (choice) {
+                  case "1":
+                    deliveryOrder.run();
+                    continue menu;
+
+                  case "2":
+                    deliveryOrder.serchOrder(user.getId());
+                    continue menu;
+
+                  case "3" :
+                    deliveryOrder.cancelOrder(user.getId());
+
+
+                }
 
               } else {
                 System.out.println("아이디 비밀번호가 일치하지 않습니다.");
@@ -82,10 +110,9 @@ public class Menu implements Runnable {
           case "3": // 3번 누르면 프로그램 종료
             break menu;
         }
-      } else if("0".equals(choice)) { // 0번 누르면
-        break menu; // 프로그램 종료
-      }
-    }
+
+        }
+      } else if ("0".equals(choice)) {}
   }
 
   private static int sInread(String id) {

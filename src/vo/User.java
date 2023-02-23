@@ -3,147 +3,210 @@ package vo;
 import java.util.Objects;
 
 public class User {
-  private String id;
-  private String password;
-  private String name;
-  private String phone;
-  private String address;
-  private int category;
-  private int storeNum;
-  private int menuNum;
-  private int sumPrice;
-  private int ordersNum;
+	private String id;
+	private String password;
+	private String name;
+	private String phone;
+	private String address;
+	private String storeName;
+	private String orderDate;
+	private String menuName;
+	private int category;
+	private int storeNum;
+	private int menuNum;
+	private int sumPrice;
+	private int ordersNum;
+	private int qty;
+	private int price;
+	private int point;
+	
+	public User() {
+	}
+	public User(String id) {
+		this.id = id;
+	}
 
-  public User() {
-  }
+	public User(String id, String password, String name, String phone, String address) {
+		this.id = id;
+		this.password = password;
+		this.name = name;
+		this.phone = phone;
+		this.address = address;
+		this.category = 0;
+		this.storeNum = 0;
+		this.menuNum = 0;
+		this.sumPrice = 0;
+	}
 
-  public User(String id, String password, String name, String phone, String address) {
-    this.id = id;
-    this.password = password;
-    this.name = name;
-    this.phone = phone;
-    this.address = address;
-    this.category = 0;
-    this.storeNum = 0;
-    this.menuNum = 0;
-    this.sumPrice = 0;
-  }
+	public User(String id, String password, String name, String phone, String address, int category, int storeNum,
+			int menuNum, int sumPrice) {
+		this(id, password, name, phone, address);
+		this.category = category;
+		this.storeNum = storeNum;
+		this.menuNum = menuNum;
+		this.sumPrice = sumPrice;
+	}
 
-  public User(String id, String password, String name, String phone, String address, int category, int storeNum, int menuNum, int sumPrice) {
-    this(id, password, name, phone, address);
-    this.category = category;
-    this.storeNum = storeNum;
-    this.menuNum = menuNum;
-    this.sumPrice = sumPrice;
-  }
-  
-  
-  
-  public int getOrdersNum() {
-	return ordersNum;
-}
+	// 아이디, 상호명, 메뉴명, 수량, 가격, 총액, 만족도, 주문날짜
+	public User(String id, String storeName, String menuName, int qty, int price, int sumPrice, int point, String orderDate) {
+		this.id = id;
+		this.storeName = storeName;
+		this.menuName = menuName;
+		this.qty = qty;
+		this.price = price;
+		this.sumPrice = sumPrice;
+		this.point = point;
+		this.orderDate = orderDate;
+	}
+	
+	public String getMenuName() {
+		return menuName;
+	}
 
-public void setOrdersNum(int ordersNum) {
-	this.ordersNum = ordersNum;
-}
+	public void setMenuName(String menuName) {
+		this.menuName = menuName;
+	}
 
-public String getId() {
-    return id;
-  }
+	public String getStoreName() {
+		return storeName;
+	}
 
-  public void setId(String id) {
-    this.id = id;
-  }
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
+	}
 
-  public String getPassword() {
-    return password;
-  }
+	public String getOrderDate() {
+		return orderDate;
+	}
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+	public void setOrderDate(String orderDate) {
+		this.orderDate = orderDate;
+	}
 
-  public String getName() {
-    return name;
-  }
+	public int getQty() {
+		return qty;
+	}
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public void setQty(int qty) {
+		this.qty = qty;
+	}
 
-  public String getPhone() {
-    return phone;
-  }
+	public int getPrice() {
+		return price;
+	}
 
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
+	public void setPrice(int price) {
+		this.price = price;
+	}
 
-  public String getAddress() {
-    return address;
-  }
+	public int getPoint() {
+		return point;
+	}
 
-  public void setAddress(String address) {
-    this.address = address;
-  }
+	public void setPoint(int point) {
+		this.point = point;
+	}
 
-  public int getCategory() {
-    return category;
-  }
+	public int getOrdersNum() {
+		return ordersNum;
+	}
 
-  public void setCategory(int category) {
-    this.category = category;
-  }
+	public void setOrdersNum(int ordersNum) {
+		this.ordersNum = ordersNum;
+	}
 
-  public int getStoreNum() {
-    return storeNum;
-  }
+	public String getId() {
+		return id;
+	}
 
-  public void setStoreNum(int storeNum) {
-    this.storeNum = storeNum;
-  }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-  public int getMenuNum() {
-    return menuNum;
-  }
+	public String getPassword() {
+		return password;
+	}
 
-  public void setMenuNum(int menuNum) {
-    this.menuNum = menuNum;
-  }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-  public int getSumPrice() {
-    return sumPrice;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public void setSumPrice(int sumPrice) {
-    this.sumPrice = sumPrice;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    User user = (User) o;
-    return Objects.equals(id, user.id) && Objects.equals(password, user.password) && Objects.equals(phone, user.phone);
-  }
+	public String getPhone() {
+		return phone;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, password, phone);
-  }
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
-  @Override
-  public String toString() {
-    return "User{" +
-            "id='" + id + '\'' +
-            ", password='" + password + '\'' +
-            ", name='" + name + '\'' +
-            ", phone='" + phone + '\'' +
-            ", address='" + address + '\'' +
-            ", category=" + category +
-            ", storeNum=" + storeNum +
-            ", menuNum=" + menuNum +
-            ", sumPrice=" + sumPrice +
-            '}';
-  }
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public int getCategory() {
+		return category;
+	}
+
+	public void setCategory(int category) {
+		this.category = category;
+	}
+
+	public int getStoreNum() {
+		return storeNum;
+	}
+
+	public void setStoreNum(int storeNum) {
+		this.storeNum = storeNum;
+	}
+
+	public int getMenuNum() {
+		return menuNum;
+	}
+
+	public void setMenuNum(int menuNum) {
+		this.menuNum = menuNum;
+	}
+
+	public int getSumPrice() {
+		return sumPrice;
+	}
+
+	public void setSumPrice(int sumPrice) {
+		this.sumPrice = sumPrice;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		User user = (User) o;
+		return Objects.equals(id, user.id) && Objects.equals(password, user.password)
+				&& Objects.equals(phone, user.phone);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, password, phone);
+	}
+
+	@Override
+	public String toString() {
+		return "User{" + "id='" + id + '\'' + ", password='" + password + '\'' + ", name='" + name + '\'' + ", phone='"
+				+ phone + '\'' + ", address='" + address + '\'' + ", category=" + category + ", storeNum=" + storeNum
+				+ ", menuNum=" + menuNum + ", sumPrice=" + sumPrice + '}';
+	}
 }
