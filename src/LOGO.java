@@ -1,5 +1,5 @@
 
-public class LOGO {
+public class LOGO implements Runnable{
 
 	public static void main(String[] args) {
 
