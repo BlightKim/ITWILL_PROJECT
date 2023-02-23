@@ -1,7 +1,8 @@
-package vo;
+package dao;
 
 
 import dao.Dao;
+import vo.User;
 
 import java.sql.*;
 
