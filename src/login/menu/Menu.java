@@ -1,9 +1,8 @@
-package login;
+package login.menu;
 
-import menu.deleteUser.DeleteUser;
-import menu.login.Login;
-import menu.register.Register;
-import menu.showinfor.ShowInfor;
+import login.Login;
+import login.menu.UpdateInfor;
+import register.Register;
 
 import java.util.Scanner;
 
@@ -11,6 +10,8 @@ public class Menu implements Runnable {
   Scanner sc;
 
   Login login;
+
+  Register register;
 
 
   public Menu(Scanner sc) {
@@ -38,22 +39,7 @@ public class Menu implements Runnable {
           register.run();
           continue outer;
 
-        case "3" : // 회원정보 확인
-          showInfor = new ShowInfor(this.sc);
-          showInfor.run();
-          continue outer;
-
-        case "4" : // 회원정보 수정
-          updateInfor = new UpdateInfor(this.sc);
-          updateInfor.run();
-          continue outer;
-
-        case "5" : // 회원탈퇴
-          deleteUser = new DeleteUser(this.sc);
-          deleteUser.run();
-          continue outer;
-
-        case "0": // 프로그램 종료
+        case "3" : // 프로그램 종료
           break outer;
       }
     }

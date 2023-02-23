@@ -1,13 +1,13 @@
 package dao;
 
-import vo.MenuVO;
+import vo.StoreVO;
 import vo.User;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class registerDaoImpl implements registerDao {
+public class RegisterDaoImpl implements RegisterDao {
   private final static String DRIVER = "oracle.jdbc.OracleDriver";
   private static final String URL = "jdbc:oracle:thin:@192.168.18.3:1521:xe";
   private static final String USER = "ITWILL";
@@ -334,81 +334,80 @@ public class registerDaoImpl implements registerDao {
     }
   }
 
-  @Override
-  public List<Store> StoreList(int categoryNum) {
-    List<Store> storeList = new ArrayList<>();
+//  @Override
+//  public List<StoreVO> StoreList(int categoryNum) {
+//    List<StoreVO> storeList = new ArrayList<>();
+//
+//    try {
+//      conn = DriverManager.getConnection(URL, USER, PASSWORD); // 드라이버 연결
+//
+//      StringBuilder sql = new StringBuilder();
+//
+//      sql.append("SELECT STORE_NUM, STORE_NAME, STAR_POINT, CATEGORY ");
+//      sql.append("FROM STORE ");
+//      sql.append("WHERE CATEGORY = ?");
+//
+//      pstmt = conn.prepareStatement(sql.toString());
+//
+//      pstmt.setInt(1, categoryNum);
+//
+//      rs = pstmt.executeQuery();
+//
+//      while(rs.next()) {
+//        StoreVO store = new StoreVO(rs.getInt("STORE_NUM"),
+//                rs.getString("STORE_NAME"),
+//                rs.getDouble("STAR_POINT"),
+//                rs.getInt("CATEGORY"),
+//                rs.get
+//        );
+//
+//        storeList.add(store);
+//      }
+//
+//    } catch (SQLException e) {
+//      throw new RuntimeException(e);
+//    } finally {
+//      close(rs, pstmt, conn);
+//      return storeList;
+//    }
+//  }
 
-    try {
-      conn = DriverManager.getConnection(URL, USER, PASSWORD); // 드라이버 연결
-
-      StringBuilder sql = new StringBuilder();
-
-      sql.append("SELECT STORE_NUM, STORE_NAME, STAR_POINT, CATEGORY ");
-      sql.append("FROM STORE ");
-      sql.append("WHERE CATEGORY = ?");
-
-      pstmt = conn.prepareStatement(sql.toString());
-
-      pstmt.setInt(1, categoryNum);
-
-      rs = pstmt.executeQuery();
-
-      while(rs.next()) {
-        Store store = new Store(rs.getInt("STORE_NUM"),
-                rs.getString("STORE_NAME"),
-                rs.getInt("STAR_POINT"),
-                rs.getInt("CATEGORY")
-        );
-
-        storeList.add(store);
-      }
-
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    } finally {
-      close(rs, pstmt, conn);
-      return storeList;
-    }
-
-  }
-
-  @Override
-  public List<MenuVO> menuList(int realStoreNum) {
-    List<MenuVO> menuList = new ArrayList<>();
-
-    try {
-      conn = DriverManager.getConnection(URL, USER, PASSWORD); // 드라이버 연결
-
-      StringBuilder sql = new StringBuilder();
-
-      sql.append("SELECT MENU_NUM, MENU_NAME, MENU_PRICE, STORE_NUM ");
-      sql.append("FROM MENU ");
-      sql.append("WHERE STORE_NUM = ?");
-
-      pstmt = conn.prepareStatement(sql.toString());
-
-      pstmt.setInt(1, realStoreNum);
-
-      rs = pstmt.executeQuery();
-
-      while(rs.next()) {
-         MenuVO menuVO = new MenuVO(rs.getInt("MENU_NUM"),
-                rs.getString("MENU_NAME"),
-                rs.getInt("MENU_PRICE"),
-                rs.getInt("STORE_NUM")
-        );
-
-        menuList.add(menuVO);
-      }
-
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    } finally {
-      close(rs, pstmt, conn);
-      return menuList;
-    }
-
-  }
+//  @Override
+//  public List<MenuVO> menuList(int realStoreNum) {
+//    List<MenuVO> menuList = new ArrayList<>();
+//
+//    try {
+//      conn = DriverManager.getConnection(URL, USER, PASSWORD); // 드라이버 연결
+//
+//      StringBuilder sql = new StringBuilder();
+//
+//      sql.append("SELECT MENU_NUM, MENU_NAME, MENU_PRICE, STORE_NUM ");
+//      sql.append("FROM MENU ");
+//      sql.append("WHERE STORE_NUM = ?");
+//
+//      pstmt = conn.prepareStatement(sql.toString());
+//
+//      pstmt.setInt(1, realStoreNum);
+//
+//      rs = pstmt.executeQuery();
+//
+//      while(rs.next()) {
+//         MenuVO menuVO = new MenuVO(rs.getInt("MENU_NUM"),
+//                rs.getString("MENU_NAME"),
+//                rs.getInt("MENU_PRICE"),
+//                rs.getInt("STORE_NUM")
+//        );
+//
+//        menuList.add(menuVO);
+//      }
+//
+//    } catch (SQLException e) {
+//      throw new RuntimeException(e);
+//    } finally {
+//      close(rs, pstmt, conn);
+//      return menuList;
+//    }
+//  }
 
   private void close(AutoCloseable... acs) { //note close 메서드
     for (AutoCloseable ac : acs)

@@ -1,7 +1,8 @@
 package login.menu;
 
-import menu.register.Daoo;
-import menu.register.DaooImpl;
+import dao.RegisterDao;
+import dao.RegisterDaoImpl;
+import dao.RegisterDaoImpl;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -9,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class UpdateInfor implements Runnable{ // 유저의 정보를 확인하여 정보 수정
   Scanner sc;
-  private Daoo daoo = new DaooImpl();
+  private RegisterDao registerDao = new RegisterDaoImpl();
   public UpdateInfor(Scanner sc) {
     this.sc = sc;
   }
@@ -40,7 +41,7 @@ public class UpdateInfor implements Runnable{ // 유저의 정보를 확인하�
       System.out.print("비밀번호를 입력하세요 >>");
       password = sc.next();
 
-      if(daoo.login(id, password)) { // id와 password가 일치
+      if(registerDao.login(id, password)) { // id와 password가 일치
         System.out.println("수정을 원하시는 항목을 선택해주세요.");
         System.out.println("1.패스워드  2.이름  3.전화번호  4.주소");
         choice = sc.nextInt();
@@ -63,10 +64,10 @@ public class UpdateInfor implements Runnable{ // 유저의 정보를 확인하�
             System.out.print("새로운 비밀번호를 입력해주세요 >>");
             String anotherPwd = "";
             anotherPwd = sc.next();
-            if(daoo.checkPwd(id, anotherPwd)) {
+            if(registerDao.checkPwd(id, anotherPwd)) {
               System.out.println("동일한 비밀번호 입니다.");
             } else {
-              daoo.updateUserPwd(id, anotherPwd);
+              registerDao.updateUserPwd(id, anotherPwd);
               System.out.println("비밀번호 수정이 완료되었습니다.");
             }
             break out;
@@ -75,7 +76,7 @@ public class UpdateInfor implements Runnable{ // 유저의 정보를 확인하�
             System.out.print("새로운 이름을 입력해주세요 >>");
             String anotherName = "";
             anotherName = sc.next().replaceAll("\\s", "");
-            daoo.updateUserName(id, anotherName);
+            registerDao.updateUserName(id, anotherName);
             System.out.println("이름 수정이 완료되었습니다.");
             break out;
 
@@ -90,7 +91,7 @@ public class UpdateInfor implements Runnable{ // 유저의 정보를 확인하�
                 System.out.println();
                 continue phone;
               } else {
-                daoo.updateUserPhone(id, anotherPhone);
+                registerDao.updateUserPhone(id, anotherPhone);
                 System.out.println("전화번호 수정이 완료되었습니다.");
                 break out;
               }
@@ -101,7 +102,7 @@ public class UpdateInfor implements Runnable{ // 유저의 정보를 확인하�
             String anotherAddress = "";
             anotherAddress = sc.next();
 
-            daoo.updateUserAddress(id, anotherAddress);
+            registerDao.updateUserAddress(id, anotherAddress);
             System.out.println("주소 수정이 완료되었습니다.");
             break out;
         } // switch문

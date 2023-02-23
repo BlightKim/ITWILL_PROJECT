@@ -1,5 +1,7 @@
 package register;
 
+import dao.RegisterDao;
+import dao.RegisterDaoImpl;
 import vo.User;
 
 import java.util.Scanner;
@@ -8,11 +10,11 @@ import java.util.regex.Pattern;
 
 public class Register implements Runnable {
   Scanner sc;
-  private Daoo daoo;
+  private RegisterDao registerDao;
 
   public Register(Scanner sc) {
     this.sc = sc;
-    daoo = new DaooImpl();
+    registerDao = new RegisterDaoImpl();
   }
 
   public void run() {
@@ -32,7 +34,7 @@ public class Register implements Runnable {
     while (true) { // 유효성 통과 못할 시 반복
       System.out.print("아이디를 입력해주세요 >>");
       id = sc.next();
-      if (!daoo.checkId(id)) {
+      if (!registerDao.checkId(id)) {
         System.out.println("이미 가입된 아이디입니다.");
         System.out.println("다시 입력해주세요.");
         continue id;
@@ -77,7 +79,7 @@ public class Register implements Runnable {
       } else if(invalidPhoneNumber(phone)) {
         System.out.println("올바르지 않은 형식입니다.");
         continue phone;
-      } else if(daoo.checkPhone(phone)) { // 전화번호 중복 확인
+      } else if(registerDao.checkPhone(phone)) { // 전화번호 중복 확인
         System.out.println("이미 가입된 전화번호입니다.");
         continue phone;
       }
@@ -96,7 +98,7 @@ public class Register implements Runnable {
     } // while문 address
 
     User user = new User(id, password, name, phone, address);
-    daoo.insertId(user);
+    registerDao.insertId(user);
 
     System.out.println("회원가입이 완료되었습니다.");
 

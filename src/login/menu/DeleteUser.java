@@ -1,13 +1,13 @@
 package login.menu;
 
-import menu.register.Daoo;
-import menu.register.DaooImpl;
+import dao.RegisterDao;
+import dao.RegisterDaoImpl;
 
 import java.util.Scanner;
 
 public class DeleteUser extends Thread {
   Scanner sc;
-  Daoo daoo = new DaooImpl();
+  RegisterDao registerDao = new RegisterDaoImpl();
 
   public DeleteUser(Scanner sc) {
     this.sc = sc;
@@ -36,13 +36,13 @@ public class DeleteUser extends Thread {
       System.out.print("비밀번호를 입력하세요 >>");
       password = sc.next().trim();
 
-      if(daoo.login(id, password)) { // id와 password가 일치
+      if(registerDao.login(id, password)) { // id와 password가 일치
         System.out.print("정말로 삭제하시겠습니까 ?(Y/N) >>");
         choice = sc.next().trim();
 
         switch(choice) {
           case "Y" :
-            daoo.deleteUser(id);
+            registerDao.deleteUser(id);
             break;
 
           case "N" :
