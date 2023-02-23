@@ -47,6 +47,15 @@ public class User {
 		this.sumPrice = sumPrice;
 	}
 
+	public User(String id, String orderDate, int storeNum, int menuNum, int ordersNum, int qty) {
+		this.id = id;
+		this.orderDate = orderDate;
+		this.storeNum = storeNum;
+		this.menuNum = menuNum;
+		this.ordersNum = ordersNum;
+		this.qty = qty;
+	}
+
 	// 아이디, 상호명, 메뉴명, 수량, 가격, 총액, 만족도, 주문날짜
 	public User(String id, String storeName, String menuName, int qty, int price, int sumPrice, int point, String orderDate) {
 		this.id = id;

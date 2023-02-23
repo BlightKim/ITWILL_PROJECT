@@ -15,7 +15,7 @@ import java.util.Scanner;
 
 public class Menu implements Runnable {
   Scanner sc;
-//  DeliveryOrder deliveryOrder = new DeliveryOrder();
+  //  DeliveryOrder deliveryOrder = new DeliveryOrder();
   Register register;
   UserDao userDao;
   DeliveryOrder deliveryOrder;
@@ -34,11 +34,9 @@ public class Menu implements Runnable {
 
     System.out.print("이용을 원하시면 엔터를 눌러주세요. (프로그램 종료는 0번)");
 
-    if ((choice = sc.nextLine()).equals("")) {  // 엔터치면 프로그램 시작
+    if ((choice = sc.nextLine()).equals("")) { // 엔터치면 프로그램 시작
 
-      menu:
-      while (true) {
-
+      menu: while (true) {
 
         System.out.println("1.로그인  2.회원가입  3.프로그램 종료");
 
@@ -48,8 +46,7 @@ public class Menu implements Runnable {
 
         switch (choice) {
           case "1":
-            login:
-            while (true) {
+            login: while (true) {
               String id = ""; // 아이디 변수
               String password = ""; // 비밀번호 변수
 
@@ -68,24 +65,30 @@ public class Menu implements Runnable {
 
                 deliveryOrder = new DeliveryOrder(user);
 
-                System.out.println("1.주문  2.주문내역 조회  3.주문 취소  4.뒤로가기");
-
-                System.out.print("원하시는 서비스를 선택해주세요. >>");
-                choice = sc.nextLine();
-
-                switch (choice) {
-                  case "1":
-                    deliveryOrder.run();
-                    continue menu;
-
-                  case "2":
-                    deliveryOrder.serchOrder(user.getId());
-                    continue menu;
-
-                  case "3" :
-                    deliveryOrder.cancelOrder(user.getId());
 
 
+                orderMenu :
+                while (true) {
+
+                  System.out.println("1.주문  2.주문내역 조회  3.주문 취소  4.뒤로가기");
+
+                  System.out.print("원하시는 서비스를 선택해주세요. >>");
+                  choice = sc.nextLine();
+
+                  switch (choice) {
+                    case "1":
+                      deliveryOrder.run();
+                      continue orderMenu;
+
+                    case "2":
+                      deliveryOrder.serchOrder(user.getId());
+                      continue menu;
+
+                    case "3":
+                      deliveryOrder.cancelOrder(user.getId());
+
+
+                  }
                 }
 
               } else {
@@ -111,8 +114,9 @@ public class Menu implements Runnable {
             break menu;
         }
 
-        }
-      } else if ("0".equals(choice)) {}
+      }
+    } else if ("0".equals(choice)) {
+    }
   }
 
   private static int sInread(String id) {
@@ -138,4 +142,3 @@ public class Menu implements Runnable {
             + "");
   }
 }
-

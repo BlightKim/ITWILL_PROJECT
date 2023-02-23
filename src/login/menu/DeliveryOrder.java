@@ -33,6 +33,8 @@ public class DeliveryOrder implements Runnable {
   @Override
   public void run() {
 
+    user.setBvoList(bvoList);
+
     deliveryMenu();
 //		System.out.println("==== 배달주문 ==================================");
 //		System.out.println("1.음식 카테고리보기 0.프로그램 종료");
@@ -46,7 +48,8 @@ public class DeliveryOrder implements Runnable {
 
         break;
 
-      case 2:
+      case 0:
+        System.exit(0);
 
         break;
 
@@ -68,7 +71,7 @@ public class DeliveryOrder implements Runnable {
 //			1.스테이킷	2.홈레스토랑		0.뒤로가기
 
     storeChoice = menuChoice(); // 음식판매정보
-    switch (choice) {      // 뒤로가기
+    switch (choice) { // 뒤로가기
       case 0:
         menuToSelect();
         break;
@@ -89,9 +92,9 @@ public class DeliveryOrder implements Runnable {
       }
       System.out.print("수량을 선택하세요 : ");
       ea = scan.nextInt();
-      bvoList = dDao.selectFood(storeChoice, choice, ea);
+      user.setBvoList(dDao.selectFood(storeChoice, choice, ea));
     }
-    showBasket(bvoList, ea);
+    showBasket(user.getBvoList(), ea);
 //			==== 주문정보 ==================================
 //			선택메뉴 : 쉬림프 스테이크, 수량 : 1개	 결제가격 : 16900원
 //			총결제금액 : 16900원
@@ -116,8 +119,8 @@ public class DeliveryOrder implements Runnable {
   public ArrayList<BasketVO> showBasket(ArrayList<BasketVO> bvoList, int ea) {
     System.out.println("==== 주문정보 ==================================");
     int sum = 0;
-    for (int i = 0; i < bvoList.size(); i++) {
-      bvo = bvoList.get(i);
+    for (int i = 0; i < user.getBvoList().size(); i++) {
+      bvo = user.getBvoList().get(i);
       System.out.print("선택메뉴 : " + bvo.getMenuName() + ", 수량 : " + bvo.getQty() + "개" + "\t");
       System.out.println(" 결제가격 : " + bvo.getSumPrice() + "원");
       sum += bvo.getSumPrice();
@@ -131,9 +134,9 @@ public class DeliveryOrder implements Runnable {
   private void buy(String id) { // 결제
     System.out.println("==== 주문정보 ==================================");
     int sum = 0;
-    for (int i = 0; i < bvoList.size(); i++) {
-      bvo = bvoList.get(i);
-      System.out.print("선택메뉴 : " + bvo.getMenuName() + ", 수량 : " + bvo.getQty() + "개" + "\t");
+    for (int i = 0; i < user.getBvoList().size(); i++) {
+      bvo = user.getBvoList().get(i);
+      System.out.print("선택메뉴 : " + bvo.getMenuName() + "\t 수량 : " + bvo.getQty() + "개" + "\t");
       System.out.println(" 결제가격 : " + bvo.getSumPrice() + "원");
       sum += bvo.getSumPrice();
     }
@@ -157,7 +160,7 @@ public class DeliveryOrder implements Runnable {
   }
 
   private void realBuy(String id, int sum) {
-    User user = uDao.userSelect(id);
+
 
     System.out.println("주문자 이름 : " + user.getName());
     System.out.println("연락받을 전화번호 : " + user.getPhone());
@@ -169,8 +172,8 @@ public class DeliveryOrder implements Runnable {
 
       case 1:
         System.out.println(sum + "원이 결제 되었습니다");
-        for (int i = 0; i < bvoList.size(); i++) {
-          bvo = bvoList.get(i);
+        for (int i = 0; i < user.getBvoList().size(); i++) {
+          bvo = user.getBvoList().get(i);
           int point = points(bvo.getMenuName());
           uDao.userBuy(id, bvo.getMenuName(), bvo.getQty(), point, bvo.getStore());
           uDao.storePoint(bvo.getStore());
@@ -180,7 +183,6 @@ public class DeliveryOrder implements Runnable {
         deliveryTime(); // 예상 배달소요 시간
         System.out.println("구매해 주셔서 감사합니다.");
         System.out.println();
-
 
         break;
 
@@ -213,9 +215,9 @@ public class DeliveryOrder implements Runnable {
     for (int i = 0; i < fvoList.size(); i++) {
 
       fvo = fvoList.get(i);
-      System.out.print(fvo.getNum() + "." + fvo.getMenuName() + " : " + fvo.getMenuPrice() + "\t");
+      System.out.print(fvo.getNum() + "." + fvo.getMenuName() + " : " + fvo.getMenuPrice() + "    ");
     }
-    System.out.print("9.장바구니" + "  " + "0.뒤로가기");
+    System.out.print("9.장바구니" + "    " + "0.뒤로가기");
     System.out.println();
 
   }
@@ -279,24 +281,32 @@ public class DeliveryOrder implements Runnable {
 
   }
 
-
   public void serchOrder(String id) { // 주문 내역 조회
-    serchList = dDao.serchOrder(id);
+    serchList = dDao.searchOrder(id);
     for (int i = 0; i < serchList.size(); i++) {
       user = serchList.get(i);
       // 아이디, 상호명, 메뉴명, 수량, 가격, 총액, 만족도, 주문날짜
-      System.out.println("아이디 : " + user.getId() + "\t" + " | 상호명 : " + user.getStoreName() + "\t" + " | 수량 : " + user.getQty() + "\t" +
-              " | 가격 : " + user.getPrice() + "\t" + " | 합계 : " + user.getSumPrice() + "\t" + " | 만족도(1~5) : " + user.getPoint() + "\t" + " | 주문일자 : " + user.getOrderDate());
+      System.out.println("아이디 : " + user.getId() + "\t" + " | 상호명 : " + user.getStoreName() + "\t" + " | 수량 : "
+              + user.getQty() + "\t" + " | 가격 : " + user.getPrice() + "\t" + " | 합계 : " + user.getSumPrice()
+              + "\t" + " | 만족도(1~5) : " + user.getPoint() + "\t" + " | 주문일자 : " + user.getOrderDate());
       System.out.println();
     }
 
   }
 
-  public void cancelOrder(String userId) {
-
+  public void searchLastOrder(String id) {
+    serchList = dDao.searchLastOrder(id);
+    for (int i = 0; i < serchList.size(); i++) {
+      user = serchList.get(i);
+      // 아이디, 상호명, 메뉴명, 수량, 가격, 총액, 만족도, 주문날짜
+      System.out.println("아이디 : " + user.getId() + "\t" + " | 상호명 : " + user.getStoreName() + "\t" + " | 수량 : "
+              + user.getQty() + "\t" + " | 가격 : " + user.getPrice() + "\t" + " | 합계 : " + user.getSumPrice()
+              + "\t" + " | 만족도(1~5) : " + user.getPoint() + "\t" + " | 주문일자 : " + user.getOrderDate());
+      System.out.println();
+    }
   }
 
-  public void showLastOrder(String usdrId) {
-    dBao.searchLastOrder
+  public void cancelOrder(String id) {
+    searchLastOrder(id);
   }
 }

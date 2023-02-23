@@ -197,32 +197,46 @@ public ArrayList<User> serchOrder(String id) {// 장바구니 담기
 		
 		
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	
-	
+	public ArrayList<User> searchLastOrder(String id) { // 15분 이내 주문리스트 불러오기
+
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT ID, MENU_NUM, CNT, BUY_DATE, STAR_POINT, ORDERS_NUM, STORE_NUM ");
+			sql.append("FROM ORDERS ");
+			sql.append("WHERE BUY_DATE > (SYSDATE-1/96) ");
+			sql.append("AND ID = ? ");
+			sql.append("ORDER BY BUY_DATE");
+
+			pstmt = conn.prepareStatement(sql.toString());
+
+			pstmt.setString(1, id);
+
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				user = new User(rs.getString("ID"),
+								rs.getString("BUY_DATE"),
+								rs.getInt("MENU_NUM"),
+								rs.getInt("CNT"),
+								rs.getInt("ORDERS_NUM"),
+								rs.getInt("STORE_NUM")
+				);
+				serchList.add(user);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+			return serchList;
+		}
+	}
+
+
 	public void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
 		try {
 			if (rs != null) rs.close();
