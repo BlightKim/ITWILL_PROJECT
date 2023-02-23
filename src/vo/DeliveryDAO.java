@@ -1,0 +1,213 @@
+package vo;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class DeliveryDAO {
+	private String DRIVER = "oracle.jdbc.OracleDriver";
+	private String URL = "jdbc:oracle:thin:@192.168.18.3:1521:xe";
+	private String USER = "ITWILL";
+	private String PASSWORD = "1234";
+	private int choice = 0;
+	Connection conn = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	User user = new User();
+	
+	ArrayList<CategoryVO> cvoList = new ArrayList<CategoryVO>();
+	ArrayList<StoreVO> svoList = new ArrayList<StoreVO>();
+	ArrayList<FoodVO> fvoList = new ArrayList<FoodVO>();
+	ArrayList<BasketVO> bvoList = new ArrayList<BasketVO>();
+	CategoryVO cvo = new CategoryVO();
+	StoreVO svo = new StoreVO();
+	FoodVO fvo = new FoodVO();
+	BasketVO bvo = new BasketVO();
+	
+	
+	
+	
+	
+	
+	
+	
+	public ArrayList<CategoryVO> foodCategory() { // 카테고리 출력
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT * FROM CATEGORY_NAME");
+
+			pstmt = conn.prepareStatement(sql.toString());
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				cvo = new CategoryVO(rs.getInt("CATEGORY"), rs.getString("CATEGORY_NAME"));
+				cvoList.add(cvo);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+		System.out.println();
+
+		return cvoList;
+	}
+
+	public ArrayList<StoreVO> store(int choice) { // 가게정보 출력
+
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT * FROM STORE_NAME WHERE CATEGORY = ? ");
+
+			pstmt = conn.prepareStatement(sql.toString());
+
+			pstmt.setInt(1, choice);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				svo = new StoreVO(rs.getInt("STORE_NUM"), rs.getString("STORE_NAME"), rs.getInt("STAR_POINT"), rs.getInt("CATEGORY"),rs.getInt("STAR_POINT"));
+				svoList.add(svo);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+
+		return svoList;
+	}
+	
+	public ArrayList<FoodVO> food(int choice) { // 음식판매정보 출력
+
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT * FROM MENU WHERE STORE_NUM = ? ");
+
+			pstmt = conn.prepareStatement(sql.toString());
+
+			pstmt.setInt(1, choice);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				fvo = new FoodVO(rs.getInt("MENU_NUM"), rs.getString("MENU_NAME"), rs.getInt("MENU_PRICE"), rs.getInt("STORE_NUM"), rs.getInt("NUM"));
+				fvoList.add(fvo);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+
+		return fvoList;
+	}
+	
+	public ArrayList<BasketVO> selectFood(int storeChoice, int choice, int ea) {// 장바구니 담기
+		
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT S.*,M.*,(MENU_PRICE * ?) ");
+			sql.append("FROM STORE_NAME S, MENU M ");
+			sql.append("WHERE S.STORE_NUM = M.STORE_NUM ");
+			sql.append("AND S.STORE_NUM = ? ");
+			sql.append("AND M.NUM = ? ");
+
+			pstmt = conn.prepareStatement(sql.toString());
+			
+			pstmt.setInt(1, ea);
+			pstmt.setInt(2, storeChoice);
+			pstmt.setInt(3, choice);
+			
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				bvo = new BasketVO(rs.getInt("MENU_NUM"),rs.getString("MENU_NAME") ,rs.getInt("MENU_PRICE"), (rs.getInt("MENU_PRICE") * ea), ea, storeChoice);
+				bvoList.add(bvo);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+		
+		return bvoList; 
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+	
+	public void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
+		try {
+			if (rs != null) rs.close();
+		} catch (SQLException e2) {
+			e2.printStackTrace();
+		}
+		try {
+			if (pstmt != null) pstmt.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			if (conn != null) conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void close(Connection conn, PreparedStatement pstmt) {
+		try {
+			if (pstmt != null) pstmt.close();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			if (conn != null) conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	
+}
