@@ -1,7 +1,9 @@
 package login.menu;
 
 import dao.DeliveryDAO;
+import dao.RegisterDaoImpl;
 import dao.UserDao;
+import register.Register;
 import vo.*;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ public class DeliveryOrder implements Runnable {
   static int storeChoice = 0;
   static int ea = 0;
   User user;
+  RegisterDaoImpl registerDao = new RegisterDaoImpl();
   BasketVO basketVO;
   DeliveryDAO dDao = new DeliveryDAO();
   UserDao uDao = new UserDao();
@@ -187,8 +190,14 @@ public class DeliveryOrder implements Runnable {
         break;
 
       case 2: // 2. 주문정보 수정
-
-        // uDao.update();
+        System.out.println("==== 배달정보 수정 ==================================");
+        System.out.println("배송시 연락받을 전화번호를 입력해주세요 :   ");
+        String phone = scan.next();
+        System.out.println();
+        System.out.println("배송받으실 주소를 입력해주세요 :   ");
+        String address = scan.next();
+        System.out.println();
+        registerDao.updateUserAddressAndPhone(id, address, phone);
 
         break;
 

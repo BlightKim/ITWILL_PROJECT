@@ -24,7 +24,7 @@ public class DeliveryDAO {
 	Connection conn = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	
+
 	User user = new User();
 	ArrayList<CategoryVO> cvoList = new ArrayList<CategoryVO>();
 	ArrayList<StoreVO> svoList = new ArrayList<StoreVO>();
@@ -35,15 +35,7 @@ public class DeliveryDAO {
 	StoreVO svo = new StoreVO();
 	FoodVO fvo = new FoodVO();
 	BasketVO bvo = new BasketVO();
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	public ArrayList<CategoryVO> foodCategory() { // 카테고리 출력
 		try {
 			conn = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -96,10 +88,10 @@ public class DeliveryDAO {
 
 		return svoList;
 	}
-	
+
 	public ArrayList<FoodVO> food(int choice) { // 음식판매정보 출력
-		
-		
+
+
 		try {
 			conn = DriverManager.getConnection(URL, USER, PASSWORD);
 
@@ -124,9 +116,9 @@ public class DeliveryDAO {
 
 		return fvoList;
 	}
-	
+
 	public ArrayList<BasketVO> selectFood(int storeChoice, int choice, int ea) {// 장바구니 담기
-		
+
 		try {
 			conn = DriverManager.getConnection(URL, USER, PASSWORD);
 
@@ -138,64 +130,65 @@ public class DeliveryDAO {
 			sql.append("AND M.NUM = ? ");
 
 			pstmt = conn.prepareStatement(sql.toString());
-			
+
 			pstmt.setInt(1, ea);
 			pstmt.setInt(2, storeChoice);
 			pstmt.setInt(3, choice);
-			
+
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
 				bvo = new BasketVO(rs.getInt("MENU_NUM"),rs.getString("MENU_NAME") ,rs.getInt("MENU_PRICE"), (rs.getInt("MENU_PRICE") * ea), ea, storeChoice);
 				bvoList.add(bvo);
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			close(conn, pstmt, rs);
 		}
-		
-		return bvoList; 
-		
-		
+
+		return bvoList;
+
+
 	}
-	
-public ArrayList<User> serchOrder(String id) {// 장바구니 담기
-		
+
+	public ArrayList<User> searchOrder(String id) {// 장바구니 담기
+
 		try {
 			conn = DriverManager.getConnection(URL, USER, PASSWORD);
 
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT O.ID, S.STORE_NAME, M.MENU_NAME, O.CNT, M.MENU_PRICE, "
-					+ "(MENU_PRICE * CNT), O.STAR_POINT, O.BUY_DATE ");
+							+ "(MENU_PRICE * CNT), O.STAR_POINT, O.BUY_DATE ");
 			sql.append("FROM ORDERS O, STORE_NAME S, MENU M ");
 			sql.append("WHERE O.STORE_NUM = S.STORE_NUM ");
 			sql.append("AND O.MENU_NUM = M.MENU_NUM ");
 			sql.append("AND O.ID = ? ");
+			sql.append("ORDER BY O.BUY_DATE ");
 
 			pstmt = conn.prepareStatement(sql.toString());
-			
+
 			pstmt.setString(1, id);
-			
-			
+
+
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				user = new User(rs.getString("ID"),rs.getString("STORE_NAME") ,rs.getString("MENU_NAME"), rs.getInt("CNT"), 
+				user = new User(rs.getString("ID"),rs.getString("STORE_NAME") ,rs.getString("MENU_NAME"), rs.getInt("CNT"),
 								rs.getInt("MENU_PRICE"), rs.getInt("(MENU_PRICE*CNT)"),rs.getInt("STAR_POINT"),rs.getString("BUY_DATE"));
 				serchList.add(user);
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			close(conn, pstmt, rs);
 		}
-		
-		return serchList; 
-		
-		
+
+		return serchList;
+
+
 	}
 
 	public ArrayList<User> searchLastOrder(String id) { // 15분 이내 주문리스트 불러오기
@@ -254,7 +247,7 @@ public ArrayList<User> serchOrder(String id) {// 장바구니 담기
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void close(Connection conn, PreparedStatement pstmt) {
 		try {
 			if (pstmt != null) pstmt.close();
@@ -269,5 +262,5 @@ public ArrayList<User> serchOrder(String id) {// 장바구니 담기
 	}
 
 
-	
+
 }

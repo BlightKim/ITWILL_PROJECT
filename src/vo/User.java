@@ -1,5 +1,6 @@
 package vo;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class User {
@@ -19,7 +20,8 @@ public class User {
 	private int qty;
 	private int price;
 	private int point;
-	
+	private ArrayList<BasketVO> bvoList;
+
 	public User() {
 	}
 	public User(String id) {
@@ -36,10 +38,11 @@ public class User {
 		this.storeNum = 0;
 		this.menuNum = 0;
 		this.sumPrice = 0;
+		this.ordersNum = 0;
 	}
 
 	public User(String id, String password, String name, String phone, String address, int category, int storeNum,
-			int menuNum, int sumPrice) {
+							int menuNum, int sumPrice) {
 		this(id, password, name, phone, address);
 		this.category = category;
 		this.storeNum = storeNum;
@@ -67,7 +70,9 @@ public class User {
 		this.point = point;
 		this.orderDate = orderDate;
 	}
-	
+
+
+
 	public String getMenuName() {
 		return menuName;
 	}
@@ -196,6 +201,15 @@ public class User {
 		this.sumPrice = sumPrice;
 	}
 
+
+	public ArrayList<BasketVO> getBvoList() {
+		return bvoList;
+	}
+
+	public void setBvoList(ArrayList<BasketVO> bvoList) {
+		this.bvoList = bvoList;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -204,7 +218,7 @@ public class User {
 			return false;
 		User user = (User) o;
 		return Objects.equals(id, user.id) && Objects.equals(password, user.password)
-				&& Objects.equals(phone, user.phone);
+						&& Objects.equals(phone, user.phone);
 	}
 
 	@Override
@@ -215,7 +229,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "User{" + "id='" + id + '\'' + ", password='" + password + '\'' + ", name='" + name + '\'' + ", phone='"
-				+ phone + '\'' + ", address='" + address + '\'' + ", category=" + category + ", storeNum=" + storeNum
-				+ ", menuNum=" + menuNum + ", sumPrice=" + sumPrice + '}';
+						+ phone + '\'' + ", address='" + address + '\'' + ", category=" + category + ", storeNum=" + storeNum
+						+ ", menuNum=" + menuNum + ", sumPrice=" + sumPrice + '}';
 	}
 }

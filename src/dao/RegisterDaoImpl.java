@@ -333,7 +333,32 @@ public class RegisterDaoImpl implements RegisterDao {
       return 1;
     }
   }
+  public int updateUserAddressAndPhone(String id, String anotherAddress, String anotherPhone) { // 전화번호와 주소 같이 수정
+    try {
+      conn = DriverManager.getConnection(URL, USER, PASSWORD); // 드라이버 연결
 
+      StringBuilder sql = new StringBuilder();
+
+      sql.append("UPDATE CUSTOMER ");
+      sql.append("SET ADDRESS = ? ");
+      sql.append("  , PHONE = ? ");
+      sql.append("WHERE ID = ?");
+
+      pstmt = conn.prepareStatement(sql.toString());
+
+      pstmt.setString(1, anotherAddress);
+      pstmt.setString(2, anotherPhone);
+      pstmt.setString(3, id);
+
+      pstmt.executeUpdate();
+
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    } finally {
+      close(rs, pstmt, conn);
+      return 1;
+    }
+  }
 //  @Override
 //  public List<StoreVO> StoreList(int categoryNum) {
 //    List<StoreVO> storeList = new ArrayList<>();
