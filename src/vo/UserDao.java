@@ -1,6 +1,8 @@
 package vo;
 
 
+import dao.Dao;
+
 import java.sql.*;
 
 public class UserDao implements Dao {
@@ -12,7 +14,6 @@ public class UserDao implements Dao {
   static {
     try {
       Class.forName(DRIVER);
-      System.out.println(">> JDBC 드라이버 로딩 성공");
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     }

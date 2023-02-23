@@ -1,4 +1,6 @@
-package vo;
+package dao;
+
+import vo.User;
 
 public interface Dao {
   User userSelect(String id) throws Exception;
