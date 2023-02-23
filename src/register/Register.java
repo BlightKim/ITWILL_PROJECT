@@ -29,79 +29,104 @@ public class Register implements Runnable {
     String address = ""; // 주소 변수
     String choice = "";
 
-
-    id:
-    while (true) { // 유효성 통과 못할 시 반복
-      System.out.print("아이디를 입력해주세요 >>");
-      id = sc.next();
-      if (!registerDao.checkId(id)) {
-        System.out.println("이미 가입된 아이디입니다.");
-        System.out.println("다시 입력해주세요.");
-        continue id;
-      } else
-        break id;
-    } //while문 id
-
-    pwd:
+    outer :
     while (true) {
-      System.out.print("6자리 이상 비밀번호를 입력해주세요 >>");
-      password = sc.next();
-      if ("".equals(password) || password.length() < 6) {
-        System.out.println("비밀번호가 적합하지 않습니다. ");
-        System.out.println("다시 입력해주세요");
-        continue pwd;
-      } else
-        break pwd;
-    } //while문 password
 
-    name:
-    while (true) {
-      System.out.print("이름을 입력해주세요 >>");
-      name = sc.next().replaceAll("\\s", "");
-      if ("".equals(name)) {
-        System.out.println("공백은 허용되지 않습니다.");
-        System.out.println("다시 입력해주세요.");
-        System.out.println();
-        continue name;
-      } else
-        break name;
-    } //while문 name
+      id:
+      while (true) { // 유효성 통과 못할 시 반복
+        System.out.print("아이디를 입력해주세요(뒤로가기 : 0) >>");
+        id = sc.nextLine();
 
-    phone:
-    while (true) {
-      System.out.println("* 010-1234-5678 형식으로 입력해주세요.");
-      System.out.print("전화번호를 입력해주세요 >>");
-      phone = sc.next();
-      if ("".equals(phone)) {
-        System.out.println("공백은 허용되지 않습니다.");
-        continue phone;
+        if ("0".equals(id)) // 0번 누르면 뒤로가기
+          break outer;
 
-      } else if(invalidPhoneNumber(phone)) {
-        System.out.println("올바르지 않은 형식입니다.");
-        continue phone;
-      } else if(registerDao.checkPhone(phone)) { // 전화번호 중복 확인
-        System.out.println("이미 가입된 전화번호입니다.");
-        continue phone;
-      }
+        if (!registerDao.checkId(id)) {
+          System.out.println("이미 가입된 아이디입니다.");
+          System.out.println("다시 입력해주세요.");
+          continue id;
+        } else
+          break id;
+      } //while문 id
+
+      pwd:
+      while (true) {
+        System.out.print("6자리 이상 비밀번호를 입력해주세요(뒤로가기 : 0) >>");
+        password = sc.nextLine();
+
+        if ("0".equals(password)) // 0번 누르면 뒤로가기
+          break outer;
+
+        if ("".equals(password) || password.length() < 6) {
+          System.out.println("비밀번호가 적합하지 않습니다. ");
+          System.out.println("다시 입력해주세요");
+          continue pwd;
+        } else
+          break pwd;
+      } //while문 password
+
+      name:
+      while (true) {
+        System.out.print("이름을 입력해주세요(뒤로가기 : 0) >>");
+        name = sc.nextLine().replaceAll("\\s", "");
+
+        if ("0".equals(name)) // 0번 누르면 뒤로가기
+          break outer;
+
+        if ("".equals(name)) {
+          System.out.println("공백은 허용되지 않습니다.");
+          System.out.println("다시 입력해주세요.");
+          System.out.println();
+          continue name;
+        } else
+          break name;
+      } //while문 name
+
+      phone:
+      while (true) {
+        System.out.println("* 010-1234-5678 형식으로 입력해주세요.");
+        System.out.print("전화번호를 입력해주세요(뒤로가기 : 0) >>");
+        phone = sc.nextLine();
+
+        if ("0".equals(phone)) // 0번 누르면 뒤로가기
+          break outer;
+
+        if ("".equals(phone)) {
+          System.out.println("공백은 허용되지 않습니다.");
+          continue phone;
+
+        } else if (invalidPhoneNumber(phone)) {
+          System.out.println("올바르지 않은 형식입니다.");
+          continue phone;
+        } else if (registerDao.checkPhone(phone)) { // 전화번호 중복 확인
+          System.out.println("이미 가입된 전화번호입니다.");
+          continue phone;
+        }
         break phone;
-    } // while문 phone
+      } // while문 phone
 
-    address:
-    while (true) {
-      System.out.println("* XX시군구 XX로 XX길로 입력해주세요.");
-      System.out.print("주소를 입력해주세요 >>");
-      address = sc.nextLine();
-      if ("".equals(address)) {
-        continue address;
-      } else
-        break address;
-    } // while문 address
+      address:
+      while (true) {
+        System.out.println("* XX시군구 XX로 XX길로 입력해주세요.");
+        System.out.print("주소를 입력해주세요(뒤로가기 : 0) >>");
 
-    User user = new User(id, password, name, phone, address);
-    registerDao.insertId(user);
+        if ("0".equals(address)) // 0번 누르면 뒤로가기
+          break outer;
 
-    System.out.println("회원가입이 완료되었습니다.");
+        address = sc.nextLine();
 
+        if ("".equals(address)) {
+          continue address;
+        } else
+          break address;
+      } // while문 address
+
+      User user = new User(id, password, name, phone, address);
+      registerDao.insertId(user);
+
+      System.out.println("회원가입이 완료되었습니다.");
+
+      break outer;
+    }
   }
 
   private boolean invalidPhoneNumber(String phone) { // 전화번호 검사
