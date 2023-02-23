@@ -1,4 +1,4 @@
-package Login.menu;
+package login;
 
 import menu.deleteUser.DeleteUser;
 import menu.login.Login;
