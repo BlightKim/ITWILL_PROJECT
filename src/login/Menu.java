@@ -1,5 +1,6 @@
 package login;
 
+import dao.DeliveryDAO;
 import dao.RegisterDao;
 import dao.RegisterDaoImpl;
 //import login.menu.DeliveryOrder;
@@ -8,9 +9,9 @@ import login.menu.DeliveryOrder;
 import register.Register;
 import vo.User;
 
-import java.io.BufferedReader;
+import javax.swing.*;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu implements Runnable {
@@ -18,11 +19,14 @@ public class Menu implements Runnable {
   //  DeliveryOrder deliveryOrder = new DeliveryOrder();
   Register register;
   UserDao userDao;
+  DeliveryDAO dDao;
   DeliveryOrder deliveryOrder;
-  private RegisterDao registerDao = new RegisterDaoImpl();
+  private RegisterDao registerDao;
 
   public Menu(Scanner sc) {
     this.sc = sc;
+    registerDao = new RegisterDaoImpl();
+    dDao = new DeliveryDAO();
   }
 
   @Override
@@ -42,7 +46,7 @@ public class Menu implements Runnable {
 
         System.out.print("원하시는 메뉴를 선택해주세요. >>");
 
-        choice = sc.nextLine();
+        choice = sc.nextLine().trim();
 
         switch (choice) {
           case "1":
@@ -70,9 +74,10 @@ public class Menu implements Runnable {
                 orderMenu :
                 while (true) {
 
-                  System.out.println("1.주문  2.주문내역 조회  3.주문 취소  4.뒤로가기");
+                  System.out.println("1.주문  2.주문내역 조회  3.주문 취소  4.회원 탈퇴  5.뒤로가기");
 
                   System.out.print("원하시는 서비스를 선택해주세요. >>");
+
                   choice = sc.nextLine();
 
                   switch (choice) {
@@ -85,9 +90,62 @@ public class Menu implements Runnable {
                       continue menu;
 
                     case "3":
-                      deliveryOrder.cancelOrder(user.getId());
+                      List<User> recentOrderList = dDao.searchLastOrder(user.getId()); // 최근 주문한 내역을 가져오기
+
+                      if(recentOrderList.isEmpty()) { // 만약에 최근 주문 내역이 없다면 ?
+                        System.out.println("최근 주문내역을 찾을 수 없습니다.");
+                        continue orderMenu; // 주문선택 메뉴로 다시 돌아간다
+                      }
+
+                      deliveryOrder.showLastOrder(recentOrderList); // 최근 주문 내역이 있다면 최근 주문 내역을 출력
 
 
+                      System.out.print("취소를 원하시는 주문의 번호를 선택해주세요(뒤로가기 : 0) >>");
+
+                      int choiceNum = Integer.parseInt(sc.nextLine()); // 번호를 선택
+
+                      if(choiceNum == 0) { // 만약에 0번을 누르면
+                        continue orderMenu; // 주문선택 메뉴로 다시 돌아간다.
+                      }
+
+                      if(isNotValidChoiceNum(choiceNum, recentOrderList)) { // true면 유효하지 않은 번호
+                        System.out.println("유효하지 않은 번호입니다.");
+                        continue orderMenu;
+                      }
+
+                      dDao.cancelOrder(recentOrderList.get(choiceNum-1).getOrdersNum());
+
+                      System.out.println("주문 취소가 완료되었습니다.");
+
+                      recentOrderList.clear();
+
+                      continue orderMenu;
+                      
+                    case "4":
+                      choice = "";
+
+                      System.out.println("=============================================");
+                      System.out.println("           화원탈퇴 화면 입니다. ");
+
+                      System.out.print("정말로 삭제하시겠습니까? Y/N (뒤로가기 : 0) >>");
+
+                      choice = sc.nextLine();
+
+                      if("0".equalsIgnoreCase(choice))
+                        continue orderMenu;
+
+                      switch (choice.toLowerCase()) {
+                        case "y":
+                          registerDao.deleteUser(id);
+                          System.out.println("삭제가 완료되었습니다.");
+                          break;
+
+                        case "n":
+                          continue orderMenu;
+                      }
+                      continue menu;
+                    case "5":
+                      continue menu;
                   }
                 }
 
@@ -117,6 +175,13 @@ public class Menu implements Runnable {
       }
     } else if ("0".equals(choice)) {
     }
+  }
+
+  private boolean isNotValidChoiceNum(int choiceNum, List<User> recentOrderList) {
+    if(!(1 <= choiceNum && choiceNum <= recentOrderList.size())) // 만약 선택번호가 최근 메뉴리스트 조회 번호에 해당하지 않으면
+      return true;
+    else
+      return false;
   }
 
   private static int sInread(String id) {

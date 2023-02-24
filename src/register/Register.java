@@ -106,15 +106,16 @@ public class Register implements Runnable {
 
       address:
       while (true) {
-        System.out.println("* XX시군구 XX로 XX길로 입력해주세요.");
-        System.out.print("주소를 입력해주세요(뒤로가기 : 0) >>");
+        System.out.println("* --특별시/광역시/특별자치시/도  --시/군/구  --행정구/읍/면/동  --도로명  --건물번호  --상세주소");
+        System.out.print("위 형식에 따라 주소를 입력해주세요(뒤로가기 : 0) >>");
+
+        address = sc.nextLine();
 
         if ("0".equals(address)) // 0번 누르면 뒤로가기
           break outer;
 
-        address = sc.nextLine();
-
         if ("".equals(address)) {
+          System.out.println("공백은 허용되지 않습니다.");
           continue address;
         } else
           break address;

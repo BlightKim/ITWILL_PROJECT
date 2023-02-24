@@ -70,7 +70,17 @@ public class User {
 		this.point = point;
 		this.orderDate = orderDate;
 	}
-
+	public User(String id, String storeName, String menuName, int qty, int price, int sumPrice, int point, String orderDate, int ordersNum) {
+		this.id = id;
+		this.storeName = storeName;
+		this.menuName = menuName;
+		this.qty = qty;
+		this.price = price;
+		this.sumPrice = sumPrice;
+		this.point = point;
+		this.orderDate = orderDate;
+		this.ordersNum = ordersNum;
+	}
 
 
 	public String getMenuName() {

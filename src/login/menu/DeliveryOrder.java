@@ -7,6 +7,7 @@ import register.Register;
 import vo.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class DeliveryOrder implements Runnable {
@@ -303,19 +304,33 @@ public class DeliveryOrder implements Runnable {
 
   }
 
-  public void searchLastOrder(String id) {
-    serchList = dDao.searchLastOrder(id);
-    for (int i = 0; i < serchList.size(); i++) {
-      user = serchList.get(i);
+  public void showLastOrder(List<User> recentOrderList) {
+    for (int i = 0; i < recentOrderList.size(); i++) {
+      user = recentOrderList.get(i);
       // 아이디, 상호명, 메뉴명, 수량, 가격, 총액, 만족도, 주문날짜
-      System.out.println("아이디 : " + user.getId() + "\t" + " | 상호명 : " + user.getStoreName() + "\t" + " | 수량 : "
+      System.out.println((i+1) + "." + " " + "아이디 : " + user.getId() + "\t" + " | 상호명 : " + user.getStoreName() + "\t" + " | 수량 : "
               + user.getQty() + "\t" + " | 가격 : " + user.getPrice() + "\t" + " | 합계 : " + user.getSumPrice()
               + "\t" + " | 만족도(1~5) : " + user.getPoint() + "\t" + " | 주문일자 : " + user.getOrderDate());
       System.out.println();
     }
   }
 
-  public void cancelOrder(String id) {
-    searchLastOrder(id);
+  public void totBuyPrice(String id) {
+    System.out.println("1. 누적 구매금액 확인    2. 뒤로가기");
+    choice = menuChoice();
+
+    switch (choice) {
+
+      case 1:
+        user = uDao.userTotPrice(id);
+        System.out.println("누적 구매금액 : " + user.getSumPrice() + "원");
+        System.out.println();
+        break;
+
+      case 2:
+
+        break;
+    }
+
   }
 }

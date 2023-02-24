@@ -197,11 +197,14 @@ public class DeliveryDAO {
 			conn = DriverManager.getConnection(URL, USER, PASSWORD);
 
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT ID, MENU_NUM, CNT, BUY_DATE, STAR_POINT, ORDERS_NUM, STORE_NUM ");
-			sql.append("FROM ORDERS ");
-			sql.append("WHERE BUY_DATE > (SYSDATE-1/96) ");
-			sql.append("AND ID = ? ");
-			sql.append("ORDER BY BUY_DATE");
+			sql.append("SELECT O.ID, S.STORE_NAME, M.MENU_NAME, O.CNT, M.MENU_PRICE, (MENU_PRICE * CNT), O.STAR_POINT, O.BUY_DATE, ORDERS_NUM ");
+			sql.append("FROM ORDERS O, STORE_NAME S, MENU M ");
+			sql.append("WHERE O.STORE_NUM = S.STORE_NUM ");
+			sql.append("AND O.MENU_NUM = M.MENU_NUM ");
+			sql.append("AND BUY_DATE > (SYSDATE-1/24) ");
+			sql.append("AND CANCLE = 0 ");
+			sql.append("AND ID = ?");
+			sql.append("ORDER BY BUY_DATE DESC");
 
 			pstmt = conn.prepareStatement(sql.toString());
 
@@ -212,11 +215,14 @@ public class DeliveryDAO {
 
 			while (rs.next()) {
 				user = new User(rs.getString("ID"),
-								rs.getString("BUY_DATE"),
-								rs.getInt("MENU_NUM"),
+								rs.getString("STORE_NAME"),
+								rs.getString("MENU_NAME"),
 								rs.getInt("CNT"),
-								rs.getInt("ORDERS_NUM"),
-								rs.getInt("STORE_NUM")
+								rs.getInt("MENU_PRICE"),
+								rs.getInt("(MENU_PRICE*CNT)"),
+								rs.getInt("STAR_POINT"),
+								rs.getString("BUY_DATE"),
+								rs.getInt("ORDERS_NUM")
 				);
 				serchList.add(user);
 			}
@@ -229,6 +235,30 @@ public class DeliveryDAO {
 		}
 	}
 
+	public int cancelOrder(int ordersNum) {
+
+		try {
+			conn = DriverManager.getConnection(URL, USER, PASSWORD);
+
+			StringBuilder sql = new StringBuilder();
+			sql.append("UPDATE ORDERS ");
+			sql.append("SET CANCLE = 1 ");
+			sql.append("WHERE ORDERS_NUM = ?");
+
+			pstmt = conn.prepareStatement(sql.toString());
+
+			pstmt.setInt(1, ordersNum);
+
+
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+			return 1;
+		}
+	}
 
 	public void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
 		try {
