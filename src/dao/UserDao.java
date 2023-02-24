@@ -51,6 +51,37 @@ public class UserDao implements Dao {
 	}
 	  
   }
+
+  public User userTotPrice(String id) {
+    User user = null;
+    try {
+      conn = DriverManager.getConnection(URL, USER, PASSWORD);
+      System.out.println();
+
+      StringBuilder sql = new StringBuilder();
+      sql.append("SELECT SUM(M.MENU_PRICE * O.CNT) AS PRICE")
+              .append(" FROM ORDERS O, STORE_NAME S, MENU M")
+              .append(" WHERE O.STORE_NUM = S.STORE_NUM")
+              .append(" AND O.MENU_NUM = M.MENU_NUM")
+              .append(" AND ID = ?");
+
+      pstmt = conn.prepareStatement(sql.toString());
+
+      pstmt.setString(1, id);
+
+      rs = pstmt.executeQuery();
+
+      while (rs.next()) {
+        user = new User(rs.getInt("PRICE"));
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    } finally {
+      close(conn, pstmt, rs);
+      return user;
+    }
+  }
+
   public void storePoint(int store) {
 	  try {
 			conn = DriverManager.getConnection(URL, USER, PASSWORD);

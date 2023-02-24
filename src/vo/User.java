@@ -28,6 +28,10 @@ public class User {
 		this.id = id;
 	}
 
+	public User(int sumPrice) {
+		this.sumPrice = sumPrice;
+	}
+
 	public User(String id, String password, String name, String phone, String address) {
 		this.id = id;
 		this.password = password;

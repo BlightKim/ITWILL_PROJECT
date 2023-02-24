@@ -62,41 +62,43 @@ public class DeliveryOrder implements Runnable {
   } // run() 끝 ----
 
   private void menuToSelect() {
-    cvoList.clear();
-    cvoList = dDao.foodCategory();
-    showCategory(cvoList);
+    menuList: while (true) {
+      cvoList.clear();
+      cvoList = dDao.foodCategory();
+      showCategory(cvoList);
 //			==== 메뉴 리스트 ==================================
 //			1.양식	2.한식	3.일식	4.중식	5.치킨	6.분식
-    choice = menuChoice(); // 가게정보
-    svoList.clear();
-    svoList = dDao.store(choice);
-    showStore(svoList);
+      choice = menuChoice(); // 가게정보
+      svoList.clear();
+      svoList = dDao.store(choice);
+      showStore(svoList);
 //			==== 가게 리스트 ==================================
 //			1.스테이킷	2.홈레스토랑		0.뒤로가기
 
-    storeChoice = menuChoice(); // 음식판매정보
-    switch (choice) { // 뒤로가기
-      case 0:
-        menuToSelect();
-        break;
-    }
-    fvoList.clear();
-    fvoList = dDao.food(storeChoice);
+      storeChoice = menuChoice(); // 음식판매정보
+      switch (choice) { // 뒤로가기
+        case 0:
 
-    while (true) {
-      showFood(fvoList);
+          continue menuList;
+      }
+      fvoList.clear();
+      fvoList = dDao.food(storeChoice);
+
+      while (true) {
+        showFood(fvoList);
 //				==== 음식 판매정보 ==================================
 //			    1.쉬림프 스테이크 : 16900	2.찹 스테이크 : 12900	3.하와이안 스테이크 : 13900	9.장바구니
-      choice = menuChoice();
-      if (choice == 9) {
-        break;
-      } else if (choice == 0) {
-        menuToSelect();
-        break;
+        choice = menuChoice();
+        if (choice == 9) {
+          break menuList;
+        } else if (choice == 0) {
+
+          continue menuList;
+        }
+        System.out.print("수량을 선택하세요 : ");
+        ea = scan.nextInt();
+        user.setBvoList(dDao.selectFood(storeChoice, choice, ea));
       }
-      System.out.print("수량을 선택하세요 : ");
-      ea = scan.nextInt();
-      user.setBvoList(dDao.selectFood(storeChoice, choice, ea));
     }
     showBasket(user.getBvoList(), ea);
 //			==== 주문정보 ==================================
@@ -110,7 +112,7 @@ public class DeliveryOrder implements Runnable {
         String id = user.getId();
         System.out.println("접속된 아이디 : " + id);
         buy(id);
-
+        user.getBvoList().clear();
         break;
       case 2:
         menuToSelect();
@@ -156,7 +158,7 @@ public class DeliveryOrder implements Runnable {
 
       case 2:
         bvoList.clear();
-
+        System.exit(0);
         break;
 
     }
@@ -193,17 +195,24 @@ public class DeliveryOrder implements Runnable {
       case 2: // 2. 주문정보 수정
         System.out.println("==== 배달정보 수정 ==================================");
         System.out.println("배송시 연락받을 전화번호를 입력해주세요 :   ");
-        String phone = scan.next();
+        scan.nextLine();
+        String phone = scan.nextLine();
         System.out.println();
         System.out.println("배송받으실 주소를 입력해주세요 :   ");
-        String address = scan.next();
+        String address = scan.nextLine();
         System.out.println();
         registerDao.updateUserAddressAndPhone(id, address, phone);
-
+        System.out.println();
+        user.setName(id);
+        user.setAddress(address);
+        user.setPhone(phone);
+        System.out.println(":: 변경된 배달정보 입니다. ::");
+        realBuy(id, sum);
         break;
 
       case 3:
         bvoList.clear();
+        System.exit(0);
 
         break;
     }
@@ -227,7 +236,8 @@ public class DeliveryOrder implements Runnable {
       fvo = fvoList.get(i);
       System.out.print(fvo.getNum() + "." + fvo.getMenuName() + " : " + fvo.getMenuPrice() + "    ");
     }
-    System.out.print("9.장바구니" + "    " + "0.뒤로가기");
+    System.out.println();
+    System.out.println(":: 장바구니 확인 후 결제하세요 " + "   <9.장바구니>" + "   " + "<0.뒤로가기>");
     System.out.println();
 
   }
@@ -235,14 +245,30 @@ public class DeliveryOrder implements Runnable {
   private void showStore(ArrayList<StoreVO> svoList) {
     System.out.println("==== 가게 리스트 ==================================");
     for (int i = 0; i < svoList.size(); i++) {
+      String star = "★";
       svo = svoList.get(i);
+      int point = (int) svo.getPoint();
+      switch (point) {
+        case 1: star = "★";
+          break;
+        case 2: star = "★★";
+          break;
+        case 3: star = "★★★";
+          break;
+        case 4: star = "★★★★";
+          break;
+        case 5: star = "★★★★★";
+          break;
+      }
       System.out.print(
-              svo.getStoreNum() + "." + svo.getStoreName() + "  평점(1~5) : " + svo.getPoint() + " 점" + "\t");
+              svo.getStoreNum() + "." + svo.getStoreName() + "  별점 : " + star +  "\t");
     }
-    System.out.print("\t" + "0.뒤로가기");
+    System.out.println();
+    System.out.println("<0.뒤로가기>");
     System.out.println();
 
   }
+
 
   private void showCategory(ArrayList<CategoryVO> cvolist) {
     System.out.println("==== 메뉴 리스트 ==================================");
@@ -291,14 +317,14 @@ public class DeliveryOrder implements Runnable {
 
   }
 
-  public void serchOrder(String id) { // 주문 내역 조회
+  public void searchOrder(String id) { // 주문 내역 조회
     serchList = dDao.searchOrder(id);
     for (int i = 0; i < serchList.size(); i++) {
       user = serchList.get(i);
-      // 아이디, 상호명, 메뉴명, 수량, 가격, 총액, 만족도, 주문날짜
-      System.out.println("아이디 : " + user.getId() + "\t" + " | 상호명 : " + user.getStoreName() + "\t" + " | 수량 : "
-              + user.getQty() + "\t" + " | 가격 : " + user.getPrice() + "\t" + " | 합계 : " + user.getSumPrice()
-              + "\t" + " | 만족도(1~5) : " + user.getPoint() + "\t" + " | 주문일자 : " + user.getOrderDate());
+      //상호명, 메뉴명, 수량, 가격, 총액, 만족도, 주문날짜
+      System.out.println("상호명 : " + user.getStoreName() + "    " + "| 메뉴명 : " + user.getMenuName() + "\t" + "| 수량 : "
+              + user.getQty() + "\t" + "| 가격 : " + user.getPrice() + "\t" + "| 합계 : " + user.getSumPrice()
+              + "\t" + "| 만족도(1~5) : " + user.getPoint() + "\t" + "| 주문일자 : " + user.getOrderDate());
       System.out.println();
     }
 

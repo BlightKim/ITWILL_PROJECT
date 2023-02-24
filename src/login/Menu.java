@@ -86,8 +86,11 @@ public class Menu implements Runnable {
                       continue orderMenu;
 
                     case "2":
-                      deliveryOrder.serchOrder(user.getId());
-                      continue menu;
+                      deliveryOrder.searchOrder(user.getId());
+                      deliveryOrder.totBuyPrice(user.getId());
+
+
+                      continue orderMenu;
 
                     case "3":
                       List<User> recentOrderList = dDao.searchLastOrder(user.getId()); // 최근 주문한 내역을 가져오기
